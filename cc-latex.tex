@@ -5,13 +5,13 @@
 %
 % SETUP:
 %   1. Upload this file to your Overleaf project
-%   2. Add \input{cc-latex} in your preamble (after \usepackage{xcolor,ifthen})
-%   3. Make sure xcolor, ifthen, and changes packages are available
+%   2. Add \input{cc-latex} in your preamble (after \usepackage{xcolor})
+%   3. Make sure xcolor and changes packages are available
 %
 % TOGGLES (set to true/false in this file to control visibility):
-%   \COMMENTStrue / \COMMENTSfalse  — author comments (\simo, \bob, etc.)
-%   \setboolean{coloring}{true/false} — revision coloring (\rone, \rtwo)
-%   \setboolean{todos}{true/false}    — todo markers (\todo)
+%   \COMMENTStrue / \COMMENTSfalse    — author comments (\simo, \bob, etc.)
+%   \coloringtrue / \coloringfalse    — revision coloring (\rone, \rtwo)
+%   \TODOStrue / \TODOSfalse          — todo markers (\todo)
 %
 % QUICK REFERENCE:
 %   \red{text}                  — always-on red text (not toggleable)
@@ -38,15 +38,13 @@
 % --------------------------------------------------------------------------
 % TODO MARKERS
 % --------------------------------------------------------------------------
-% Toggle: set todos to false to hide all \todo{} text
+% Toggle: \TODOStrue / \TODOSfalse
 
-\newboolean{todos}
-\setboolean{todos}{true} % Change to false to hide TODOs
+\newif\ifTODOS
+\TODOStrue
 
 \newcommand{\todo}[1]{%
-  \ifthenelse{\boolean{todos}}{%
-    \textcolor{red}{[TODO: #1]}%
-  }{}%
+  \ifTODOS\textcolor{red}{[TODO: #1]}\fi%
 }
 
 
@@ -113,20 +111,16 @@
 % --------------------------------------------------------------------------
 % REVISION COLORING
 % --------------------------------------------------------------------------
-% Toggle: set coloring to false to hide revision colors
+% Toggle: \coloringtrue / \coloringfalse
 % Use \rone{} for round 1 revisions, \rtwo{} for round 2
 
-\newboolean{coloring}
-\setboolean{coloring}{true} % Change to false to disable coloring
+\newif\ifcoloring
+\coloringtrue
 
 \newcommand{\rone}[1]{%
-  \ifthenelse{\boolean{coloring}}{%
-    {\color{blue}#1}%
-  }{#1}%
+  \ifcoloring{\color{blue}#1}\else#1\fi%
 }
 
 \newcommand{\rtwo}[1]{%
-  \ifthenelse{\boolean{coloring}}{%
-    {\color{violet}#1}%
-  }{#1}%
+  \ifcoloring{\color{violet}#1}\else#1\fi%
 }
