@@ -1,0 +1,132 @@
+
+% ==========================================================================
+% cc-latex.tex — Shared review and collaboration macros for Overleaf
+% ==========================================================================
+%
+% SETUP:
+%   1. Upload this file to your Overleaf project
+%   2. Add \input{cc-latex} in your preamble (after \usepackage{xcolor,ifthen})
+%   3. Make sure xcolor, ifthen, and changes packages are available
+%
+% TOGGLES (set to true/false in this file to control visibility):
+%   \COMMENTStrue / \COMMENTSfalse  — author comments (\simo, \bob, etc.)
+%   \setboolean{coloring}{true/false} — revision coloring (\rone, \rtwo)
+%   \setboolean{todos}{true/false}    — todo markers (\todo)
+%
+% QUICK REFERENCE:
+%   \red{text}                  — always-on red text (not toggleable)
+%   \todo{remember to fix this} — red TODO text (toggle: todos)
+%   \simo{text}{comment}        — inline author comment (toggle: COMMENTS)
+%   \rone{revised text}          — blue revision marker (toggle: coloring)
+%   \rtwo{revised text}         — violet revision marker (toggle: coloring)
+%   \added{text}  \deleted{text}  \replaced{new}{old}  — changes package
+%
+% FOR FINAL/CAMERA-READY: set all three toggles to false, and switch
+%   \usepackage[draft]{changes} to \usepackage[final]{changes}
+% ==========================================================================
+
+
+% --------------------------------------------------------------------------
+% UTILITY COMMANDS
+% --------------------------------------------------------------------------
+
+% Paint text red — handy for quick emphasis or flagging
+% Usage: \red{some important text}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+
+
+% --------------------------------------------------------------------------
+% TODO MARKERS
+% --------------------------------------------------------------------------
+% Toggle: set todos to false to hide all \todo{} text
+
+\newboolean{todos}
+\setboolean{todos}{true} % Change to false to hide TODOs
+
+\newcommand{\todo}[1]{%
+  \ifthenelse{\boolean{todos}}{%
+    \textcolor{red}{[TODO: #1]}%
+  }{}%
+}
+
+
+% --------------------------------------------------------------------------
+% AUTHOR COMMENT COMMANDS
+% --------------------------------------------------------------------------
+% Toggle: set \COMMENTStrue or \COMMENTSfalse
+
+\newif\ifCOMMENTS
+\COMMENTStrue
+
+\ifCOMMENTS
+\newcommand{\simo}[2]{\textcolor{red}{#1\bf{ (Simo: #2)}}}
+\newcommand{\bob}[2]{\textcolor{blue}{#1\bf{ (Bob: #2)}}}
+\newcommand{\alice}[2]{\textcolor{teal}{#1\bf{ (Alice: #2)}}}
+\newcommand{\negatron}[2]{\textcolor{purple}{#1\bf{ (Negatron: #2)}}}
+\else
+\newcommand{\simo}[2]{#1}
+\newcommand{\bob}[2]{#1}
+\newcommand{\alice}[2]{#1}
+\newcommand{\negatron}[2]{#1}
+\fi
+
+% Usage: \simo{test sentence}{maybe rephrase this part}
+%        \bob{some text}{I disagree with this}
+%        \alice{a claim}{needs citation}
+%        \negatron{paragraph}{this section is weak}
+%
+% TO ADD A NEW AUTHOR:
+%   1. Pick a color (e.g. orange, brown, cyan — see xcolor docs)
+%   2. Add inside BOTH the \ifCOMMENTS and \else branches:
+%      \ifCOMMENTS block:
+%        \newcommand{\yourname}[2]{\textcolor{yourcolor}{#1\bf{ (Yourname: #2)}}}
+%      \else block:
+%        \newcommand{\yourname}[2]{#1}
+%   3. Optionally add a \definechangesauthor line below for the changes package
+
+
+% --------------------------------------------------------------------------
+% CHANGE TRACKING (changes package)
+% --------------------------------------------------------------------------
+% https://mirrors.ibiblio.org/CTAN/macros/latex/contrib/changes/changes.english.pdf
+\usepackage[draft]{changes}  % shows changes
+%\usepackage[final]{changes}  % hides changes
+
+% Define authors for the changes package
+\definechangesauthor[name={Simo}, color=red]{SH}
+\definechangesauthor[name={Bob}, color=blue]{BO}
+\definechangesauthor[name={Alice}, color=teal]{AL}
+\definechangesauthor[name={Negatron}, color=purple]{NE}
+
+% Basic usage:
+%   \added{This is added text.}
+%   \deleted{This text is deleted.}
+%   \replaced{new text}{old text}
+%
+% With author tag:
+%   \added[SH]{Author-tagged addition.}
+%   \deleted[BO]{Author-tagged deletion.}
+%   \replaced[AL]{newer text}{older text}
+% --------------------------------------------------------------------------
+
+
+% --------------------------------------------------------------------------
+% REVISION COLORING
+% --------------------------------------------------------------------------
+% Toggle: set coloring to false to hide revision colors
+% Use \rone{} for round 1 revisions, \rtwo{} for round 2
+
+\newboolean{coloring}
+\setboolean{coloring}{true} % Change to false to disable coloring
+
+\newcommand{\rone}[1]{%
+  \ifthenelse{\boolean{coloring}}{%
+    {\color{blue}#1}%
+  }{#1}%
+}
+
+\newcommand{\rtwo}[1]{%
+  \ifthenelse{\boolean{coloring}}{%
+    {\color{violet}#1}%
+  }{#1}%
+}
